@@ -1,10 +1,13 @@
 io.stdout:setvbuf("no")
 tlog = require "alphonsus.tlog"
 
+local Input = require "alphonsus.input"
+
 local Gamestate = require "lib.hump.gamestate"
 local gamera = require "lib.gamera"
 local push = require "lib.push"
 local shack = require "lib.shack"
+local timer = require "lib.hump.timer"
 
 local assets = require "assets"
 
@@ -25,12 +28,20 @@ function love.load()
 	end
 	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = G.fullscreen, pixelperfect = true})
 
-	-- setup cam
-	-- cam = gamera.new(0, 0, windowWidth*100, windowHeight*100)
-	-- cam:setWindow(0, 0, gameWidth, gameHeight)
-
 	-- setup screenshake
 	shack:setDimensions(push:getDimensions())
+
+	-- register controls
+	Input.register({
+		["shoot"]  = { "space" },
+		["left"]   = { "a", "left" },
+		["right"]  = { "d", "right" },
+		["up"]   = { "w", "up" },
+		["down"]   = { "s", "down" },
+		["zoomIn"] = {"1"},
+		["zoomOut"] = {"2"},
+		["rotate"] = {"3"},
+	})
 
 	-- setup Gamestate
 	Gamestate.registerEvents()
@@ -40,6 +51,7 @@ end
 
 function love.update(dt)
 	shack:update(dt)
+	timer.update(dt)
 end
 
 function love.draw()

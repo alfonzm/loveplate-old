@@ -11,6 +11,9 @@ local System = require "lib.knife.system"
 local updateSystem = System(
 	{ "update" },
 	function(update, entity, dt)
+		if entity.animation then
+			entity.animation:update(dt)
+		end
 		entity:update(dt)
 	end
 )
