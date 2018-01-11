@@ -1,6 +1,7 @@
 local GameObject = require "alphonsus.gameobject"
 local Input = require "alphonsus.input"
 local anim8 = require "lib.anim8"
+local _ = require "lib.lume"
 local assets = require "assets"
 
 local Bullet = require "entities.bullet"
@@ -18,6 +19,7 @@ function Player:new(x, y)
 
 	-- draw/sprite component
 	self.layer = G.layers.player
+	self.isLayerYPos = true
 	self.sprite = assets.player
 	self.flippedH = false
 	self.offset = { x = G.tile_size/2, y = G.tile_size/2 }
@@ -25,9 +27,9 @@ function Player:new(x, y)
 	self.idleAnimation = anim8.newAnimation(g('1-3',1), 0.1)
 	self.animation = self.idleAnimation
 
-	local maxVelocity = 200
-	local speed = maxVelocity * 20
-	local drag = maxVelocity * 10
+	local maxVelocity = 180
+	local speed = maxVelocity * 8
+	local drag = maxVelocity * 6
 
 	-- movable component
 	self.movable = {
@@ -37,6 +39,11 @@ function Player:new(x, y)
 		maxVelocity = { x = maxVelocity, y = maxVelocity },
 		speed = { x = speed, y = speed } -- used to assign to acceleration
 	}
+
+	-- self.collider.ox = G.tile_size/2 - G.tile_size/4
+	self.collider.oy = G.tile_size/2
+	-- self.collider.w = G.tile_size/2
+	self.collider.h = G.tile_size/2
 
 	-- platformer component
 	-- self.platformer = {
@@ -50,11 +57,11 @@ end
 function Player:collide(other)
 end
 
--- function Player.collisionFilter(item, other)
--- 	if other.isEnemy then return "cross" end
-
--- 	return "slide"
--- end
+function Player.collisionFilter(item, other)
+	-- if other.isEnemy or other.isBullet or not other.isSolid then return "cross" end
+	if other.isEnemy then return "cross" end
+	return "slide"
+end
 
 function Player:update(dt)
 	self:moveControls(dt)
@@ -94,11 +101,18 @@ function Player:jump()
 end
 
 function Player:shoot()
-	local x, y = self.pos.x, self.pos.y
 	local angle = self.direction == Direction.right and 90 or -90
-	local speed = 1600
+	local speed = 1500 * _.sign(angle)
+
+	-- local x, y = self:getMiddlePosition()
+	local x, y = self.pos.x, self.pos.y
+	local b = Bullet(x, y, angle, speed, self)
+	b.movable.drag.y = -G.gravity
+	-- b.movable.drag.x = 5000
+	b.movable.velocity.y = G.gravity/1000
+	b.movable.velocity.x = speed/10
 	
-	scene:addEntity(Bullet(x, y, angle, speed, self))
+	scene:addEntity(b)
 end
 
 -- function Player:setupParticles()

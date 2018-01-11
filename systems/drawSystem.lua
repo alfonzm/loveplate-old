@@ -10,13 +10,21 @@ local System = require "lib.knife.system"
 local drawSystem = System(
 	{ "draw" },
 	function(draw, e)
+		local x, y = e.pos.x, e.pos.y
+		local sx, sy = e.scale.x or 1, e.scale.y or 1
+		local angle = e.angle or 0
+
 		if e.animation then
-			e.animation:draw(e.sprite, e.pos.x, e.pos.y, e.angle)
+			e.animation:draw(e.sprite, x, y, angle, sx, sy)
 		elseif e.sprite then
-			love.graphics.draw(e.sprite, e.pos.x, e.pos.y, angle)
+			love.graphics.draw(e.sprite, x, y, angle, sx, sy)
 		end
 
 		if e.draw then e:draw() end
+
+		if e.isLayerYPos then
+			e.layer = e.pos.y
+		end
 
 		if e.collider and G.debug then
 			love.graphics.setColor(255, 0, 0)

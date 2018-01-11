@@ -11,13 +11,13 @@ G = {
   gravity = -1500,
 
   layers = {
-    bg = 1,
-    default = 2,
-    tiles = 5,
-    player = 10,
-    enemy = 15,
-    bullet = 20,
-    explosions = 30,
+    bg         = 100000,
+    default    = 200000,
+    tiles      = 300000,
+    player     = 400000,
+    enemy      = 500000,
+    bullet     = 600000,
+    explosions = 700000,
   }
 }
 

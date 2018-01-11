@@ -90,8 +90,4 @@ function Scene:draw()
 	end
 end
 
-local function compareZindex(a, b)
-  return a.zindex < b.zindex
-end
-
 return Scene

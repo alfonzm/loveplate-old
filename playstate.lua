@@ -15,7 +15,7 @@ local player = {}
 function PlayState:enter()
 	PlayState.super.enter(self)
 
-	player = Player(300, 10)
+	player = Player(300, 50)
 
 	scene = self
 
@@ -25,7 +25,10 @@ function PlayState:enter()
 	for i=10,30 do
 		self:addEntity(Square(i * G.tile_size, 10 * G.tile_size))
 	end
-	self:addEntity(Square(10 * G.tile_size, 9 * G.tile_size))
+	self:addEntity(Square(10 * G.tile_size, 12 * G.tile_size))
+	self:addEntity(Square(11 * G.tile_size, 8 * G.tile_size))
+	self:addEntity(Square(10 * G.tile_size, 8 * G.tile_size))
+
 	self:addEntity(Enemy(14 * G.tile_size, 7 * G.tile_size))
 
 	-- for i=1,50 do

@@ -11,7 +11,7 @@ Direction = {
 	right = 'right'
 }
 
-function GameObject:new(x,y)
+function GameObject:new(x, y, w, h)
 	-- gameobject
 	self.name = "GameObject"
 	self.isAlive = true
@@ -19,36 +19,41 @@ function GameObject:new(x,y)
 
 	self.visible = true
 	self.isSolid = false
-	self.layer = G.layers.default
+
+	-- draw layer
+	self.layer = 0
+
+	-- if true, drawSystem will set self.layer to self.pos.y on update loop
+	-- used for 2.5D topdown games
+	self.isLayerYPos = false
 
 	-- transform
 	self.pos = { x = x or 0, y = y or 0 }
-	-- self.offset = { x = 0, y = 0}
-	self.scale = {}
+	self.width = w or G.tile_size
+	self.height = h or G.tile_size
+	self.offset = { x = self.width/2, y = self.height/2 }
+	self.scale = { x = 1, y = 1 }
 	self.angle = 0 -- in radians
 
 	-- collider component
 	self.collider = {
-		x = x,
-		y = y,
-		w = G.tile_size,
-		h = G.tile_size
+		x = x - self.offset.x,
+		y = y - self.offset.y,
+		w = self.width,
+		h = self.height,
+		ox = 0,
+		oy = 0
 	}
 
 	return self
 end
 
-function GameObject:getMiddleX()
+function GameObject:getMiddlePosition()
+	return self.pos.x - self.offset.x, self.pos.y - self.offset.y
 end
 
 function GameObject:selfDestructIn(seconds)
 	timer.after(seconds, function() self.toRemove = true end)
 end
-
--- function GameObject:setDrawLayer(newZIndex)
--- 	self["zIndex" .. self.zIndex] = nil
--- 	self.zIndex = newZIndex
--- 	self["zIndex" .. (newZIndex or 1)] = true
--- end
 
 return GameObject

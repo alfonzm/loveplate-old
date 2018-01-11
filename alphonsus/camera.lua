@@ -65,10 +65,4 @@ function Camera:shake(amount)
 	shack:setShake(amount or 10)
 end
 
--- function Camera:setDrawLayer(newZIndex)
--- 	self["zIndex" .. self.zIndex] = nil
--- 	self.zIndex = newZIndex
--- 	self["zIndex" .. (newZIndex or 1)] = true
--- end
-
 return Camera
