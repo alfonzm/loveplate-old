@@ -45,8 +45,10 @@ end
 function Scene:addEntity(e)
 	table.insert(self.entities, e)
 
-	if e.collider then
-		self.bumpWorld:add(e, e.collider.x, e.collider.y, e.collider.w, e.collider.h)
+	local col = e.collider
+
+	if col and col.x and col.y and col.w and col.h then
+		self.bumpWorld:add(e, col.x, col.y, col.w, col.h)
 	end
 end
 

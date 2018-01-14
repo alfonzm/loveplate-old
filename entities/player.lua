@@ -11,11 +11,10 @@ local Player = GameObject:extend()
 function Player:new(x, y)
 	Player.super.new(self, x, y)
 	self.name = "Player"
-	self.tag = "player1"
-	self.isPlayer = true
-	self.isSolid = true
 
-	self.direction = Direction.right
+	-- tags
+	self.isPlayer = true
+	self.tag = "Player1"
 
 	-- draw/sprite component
 	self.layer = G.layers.player
@@ -27,9 +26,12 @@ function Player:new(x, y)
 	self.idleAnimation = anim8.newAnimation(g('1-3',1), 0.1)
 	self.animation = self.idleAnimation
 
+	-- physics
+	self.isSolid = true
+	self.direction = Direction.right
 	local maxVelocity = 180
-	local speed = maxVelocity * 8
-	local drag = maxVelocity * 6
+	local speed = maxVelocity * 10
+	local drag = maxVelocity * 20
 
 	-- movable component
 	self.movable = {
@@ -40,10 +42,13 @@ function Player:new(x, y)
 		speed = { x = speed, y = speed } -- used to assign to acceleration
 	}
 
+	-- collider adjustments
+	self.collidableTags = {"isEnemy"}
+	-- self.nonCollidableTags = {"isSquare"}
 	-- self.collider.ox = G.tile_size/2 - G.tile_size/4
-	self.collider.oy = G.tile_size/2
+	-- self.collider.oy = G.tile_size/2
 	-- self.collider.w = G.tile_size/2
-	self.collider.h = G.tile_size/2
+	-- self.collider.h = G.tile_size/2
 
 	-- platformer component
 	-- self.platformer = {
@@ -55,12 +60,6 @@ function Player:new(x, y)
 end
 
 function Player:collide(other)
-end
-
-function Player.collisionFilter(item, other)
-	-- if other.isEnemy or other.isBullet or not other.isSolid then return "cross" end
-	if other.isEnemy then return "cross" end
-	return "slide"
 end
 
 function Player:update(dt)
@@ -102,15 +101,11 @@ end
 
 function Player:shoot()
 	local angle = self.direction == Direction.right and 90 or -90
-	local speed = 1500 * _.sign(angle)
+	local speed = 200 * _.sign(angle)
 
 	-- local x, y = self:getMiddlePosition()
 	local x, y = self.pos.x, self.pos.y
 	local b = Bullet(x, y, angle, speed, self)
-	b.movable.drag.y = -G.gravity
-	-- b.movable.drag.x = 5000
-	b.movable.velocity.y = G.gravity/1000
-	b.movable.velocity.x = speed/10
 	
 	scene:addEntity(b)
 end

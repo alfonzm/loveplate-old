@@ -17,7 +17,8 @@ local removeSystem = System(
 				e.onRemove()
 			end
 			table.remove(entities, i)
-			bumpWorld:remove(e)
+
+			if e.collider then bumpWorld:remove(e) end
 		end
 	end
 )

@@ -14,11 +14,12 @@ Direction = {
 function GameObject:new(x, y, w, h)
 	-- gameobject
 	self.name = "GameObject"
+	self.tag = ""
 	self.isAlive = true
 	self.toRemove = false
 
 	self.visible = true
-	self.isSolid = false
+	self.isSolid = true
 
 	-- draw layer
 	self.layer = 0
@@ -45,15 +46,35 @@ function GameObject:new(x, y, w, h)
 		oy = 0
 	}
 
+	-- used for collision filters in collisionSystem
+	-- if collides with entities with these tags, they will "slide"
+	self.collidableTags = {}
+
+	-- if collides with entities with these tags, they will "cross"
+	self.nonCollidableTags = {}
+
 	return self
 end
 
 function GameObject:getMiddlePosition()
-	return self.pos.x - self.offset.x, self.pos.y - self.offset.y
+	return self.pos.x + self.width/2, self.pos.y + self.height/2
 end
 
 function GameObject:selfDestructIn(seconds)
 	timer.after(seconds, function() self.toRemove = true end)
+end
+
+function GameObject:collisionFilter(other)
+	for i,tag in ipairs(self.collidableTags) do
+		if other[tag] then return "slide" end
+	end
+
+	for i,tag in ipairs(self.nonCollidableTags) do
+		if other[tag] then return "cross" end
+	end
+
+	if self.isSolid and other.isSolid then return "slide" end
+	return "cross"
 end
 
 return GameObject

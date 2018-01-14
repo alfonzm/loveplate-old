@@ -1,5 +1,5 @@
 G = {
-  title = "Love Game",
+  title = "Game Title",
   width = 240,
   height = 180,
   scale = 3,
@@ -16,8 +16,8 @@ G = {
     tiles      = 300000,
     player     = 400000,
     enemy      = 500000,
-    bullet     = 600000,
-    explosions = 700000,
+    explosion  = 600000,
+    bullet     = 700000,
   }
 }
 

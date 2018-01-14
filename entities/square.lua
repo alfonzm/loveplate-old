@@ -2,19 +2,17 @@ local GameObject = require "alphonsus.gameobject"
 
 local Square = GameObject:extend()
 
-function Square:new(x, y, color)
-	Square.super.new(self, x, y)
+function Square:new(x, y, color, w, h)
+	Square.super.new(self, x, y, w, h)
 	self.name = "Square"
 	self.isSquare = true
 	self.isSolid = true
 	self.isLayerYPos = true
 	self.color = color or {0,255,0}
-	return self
-end
 
-function Square:collisionFilter(other)
-	if other.isSquare then return "cross" end
-	return "slide"
+	self.nonCollidableTags = {"isSquare"}
+
+	return self
 end
 
 function Square:draw()

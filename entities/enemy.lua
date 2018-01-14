@@ -8,9 +8,7 @@ function Enemy:new(x, y, color)
 	self.name = "Enemy"
 	self.isEnemy = true
 	self.isSolid = false
-
-	self.collider.oy = 10
-	self.collider.h = self.collider.h - 10
+	self.isLayerYPos = false
 
 	self.layer = G.layers.enemy
 
@@ -18,8 +16,8 @@ function Enemy:new(x, y, color)
 	return self
 end
 
-function Enemy:collisionFilter(other)
-	return "cross"
-end
+-- function Enemy:collisionFilter(other)
+-- 	return "cross"
+-- end
 
 return Enemy

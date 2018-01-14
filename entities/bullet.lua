@@ -1,6 +1,10 @@
 local GameObject = require "alphonsus.gameobject"
 
+local _ = require "lib.lume"
+
+local Circle = require "entities.circle"
 local Square = require "entities.square"
+local Explosion = require "entities.explosion"
 
 local Bullet = Square:extend()
 
@@ -15,18 +19,18 @@ function Bullet:new(x, y, angle, speed, owner)
 	self.isLayerYPos = false
 
 	self.owner = owner
+	self.tag = self.owner.tag
 
 	-- self.isMoveTowardsAngle = true
 
-	local maxVelocity = speed or 50
-	local speed = maxVelocity / 10
+	local maxVelocity = speed
 
 	-- movable component
 	self.movable = {
-		velocity = { x = 0, y = 0 },
+		velocity = { x = speed, y = 0 },
 		drag = { x = 0, y = 0 },
 		maxVelocity = { x = maxVelocity, y = maxVelocity },
-		speed = { x = speed, y = speed },
+		speed = { x = 0, y = 0 },
 		acceleration = { x = 0, y = 0 }
 	}
 
@@ -41,6 +45,8 @@ function Bullet:new(x, y, angle, speed, owner)
 		h = self.height
 	}
 
+	self.nonCollidableTags = {"isBullet"}
+
 	self.offset = { x = self.collider.w/2, y = self.collider.h/2 }
 
 	self.color = {255,255,255}
@@ -48,20 +54,16 @@ function Bullet:new(x, y, angle, speed, owner)
 end
 
 function Bullet:collide(other)
-	if self.owner.isPlayer and other.name == "Enemy" then
+	if self.tag ~= other.tag then
 		self.toRemove = true
-		local x, y = self:getMiddlePosition()
-		s = Square(x, y, {255,255,255})
-		s.isSolid = false
-		s:selfDestructIn(0.1)
-		s.isLayerYPos = false
-		s.layer = self.layer
 
-		scene:addEntity(s)
-		-- scene.camera:shake(2)
-		-- love.graphics.setColor(255,255,255,255)
-		-- love.graphics.setLineStyle('rough')
-		-- love.graphics.circle("fill", self.pos.x, self.pos.y, 15, 100)
+		local x, y = self:getMiddlePosition()
+		for i=0,5 do
+			local size = _.random(10,20)
+			-- scene:addEntity(Circle(x, y, size, size))
+			scene:addEntity(Explosion(x + _.random(-6,6), y + _.random(-6,6), size, size))
+			-- scene.camera:shake(2)
+		end
 	end
 end
 
