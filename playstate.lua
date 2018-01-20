@@ -1,6 +1,8 @@
 local Scene = require "alphonsus.scene"
 local Input = require "alphonsus.input"
+local GameObject = require "alphonsus.gameobject"
 local shack = require "lib.shack"
+local _ = require "lib.lume"
 local Gamestate = require "lib.hump.gamestate"
 
 local Square = require "entities.square"
@@ -12,11 +14,19 @@ local PlayState = Scene:extend()
 
 local player = {}
 
+function getMiddlePoint(pos1, pos2)
+	return (pos1.x + pos2.x)/2 + player.width/2, (pos1.y + pos2.y)/2 - player.width/2
+end
+
 function PlayState:enter()
 	PlayState.super.enter(self)
 	scene = self
 
-	player = Player(300, 50)
+	player = Player(300, 50, 1)
+	player2 = Player(200, 50, 2)
+
+	middlePoint = GameObject(getMiddlePoint(player.pos, player2.pos),0,0)
+	middlePoint.collider = nil
 
 	-- self:addEntity(Bullet(100, 100, 45, 50))
 	
@@ -37,14 +47,30 @@ function PlayState:enter()
 	-- end
 
 	self:addEntity(player)
+	self:addEntity(player2)
 
-	self.camera:setPosition(player.pos.x, player.pos.y)
-	self.camera:startFollowing(player, player.collider.w / 2, player.collider.h / 2)
+	self.camera:setPosition(middlePoint.pos.x, middlePoint.pos.y)
+	self.camera:startFollowing(middlePoint, 0, 0)
 	self.camera.followSpeed = 5
 end
 
 function PlayState:stateUpdate(dt)
 	PlayState.super.stateUpdate(self, dt)
+
+	local x, y = getMiddlePoint(player.pos, player2.pos)
+	middlePoint.pos.x = x
+	middlePoint.pos.y = y
+
+	local d = _.distance(player.pos.x, player.pos.y, player2.pos.x, player2.pos.y)
+
+	self.camera.zoom = 1
+	if d > G.height then
+		self.camera.zoom = 0.8
+	end
+
+	if d > G.height * 1.5 then
+		self.camera.zoom = 0.6
+	end
 
 	if Input.wasKeyPressed('`') then
 		G.debug = not G.debug

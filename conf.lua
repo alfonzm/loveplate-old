@@ -16,10 +16,11 @@ G = {
     tiles      = 300000,
     player     = 400000,
     enemy      = 500000,
+    particles  = 500010,
     explosion  = 600000,
     bullet     = 700000,
   }
-}
+} 
 
 function love.conf(t)
   t.window.title = G.title

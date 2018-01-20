@@ -8,24 +8,31 @@ function Particles:new(x, y)
 	self.name = "Particles"
 	self.isParticles = true
 
+	self.collider = nil
+	self.layer = G.layers.particles
+
 	self.ps = love.graphics.newParticleSystem(assets.whiteCircle, 100)
-	self.ps:setPosition(self.pos.x, self.pos.y)
-	self.ps:setColors(82, 127, 57, 255) -- rgba
-
-	self.ps:setParticleLifetime(0.2, 2)
-	self.ps:setDirection(1.5*3.14)
-	self.ps:setSpread(3.14/1)
-
-	self.ps:setLinearAcceleration(0, 100) -- x, y acceleration
-	self.ps:setLinearDamping(5) -- decceleration (for x and y)
-
-	self.ps:setRotation(0, 1) -- initial rotation
-	self.ps:setSpin(0, 10) -- angular velocity
-
-	self.ps:setSizes(0.7, 0) -- initial size
-	
-	self.ps:setInsertMode('random')
 	return self
+end
+
+function Particles:load(p)
+	self.ps = love.graphics.newParticleSystem(assets.whiteCircle, 100)
+	-- self.ps:setPosition(self.pos.x, self.pos.y)
+	self.ps:setColors(unpack(p.colors)) -- rgba
+
+	self.ps:setParticleLifetime(unpack(p.particleLifetime))
+	self.ps:setDirection(p.direction)
+	self.ps:setSpread(p.spread)
+
+	self.ps:setLinearAcceleration(unpack(p.linearAcceleration)) -- x, y acceleration
+	self.ps:setLinearDamping(p.linearDamping) -- decceleration (for x and y)
+
+	self.ps:setRotation(unpack(p.rotation)) -- initial rotation
+	self.ps:setSpin(unpack(p.spin)) -- angular velocity
+
+	self.ps:setSizes(unpack(p.sizes)) -- initial size
+	
+	self.ps:setInsertMode(p.insertMode)
 end
 
 function Particles:update(dt)

@@ -34,13 +34,19 @@ function love.load()
 	-- register controls
 	Input.register({
 		["shoot"]  = { "space" },
-		["left"]   = { "a", "left" },
-		["right"]  = { "d", "right" },
-		["up"]   = { "w", "up" },
-		["down"]   = { "s", "down" },
 		["zoomIn"] = {"1"},
 		["zoomOut"] = {"2"},
 		["rotate"] = {"3"},
+
+		["1_left"] = {"a"},
+		["1_right"] = {"d"},
+		["1_down"] = {"s"},
+		["1_up"] = {"w"},
+
+		["2_left"] = {"left"},
+		["2_right"] = {"right"},
+		["2_down"] = {"down"},
+		["2_up"] = {"up"},
 	})
 
 	-- setup Gamestate

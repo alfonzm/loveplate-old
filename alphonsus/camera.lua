@@ -6,7 +6,7 @@ local shack = require "lib.shack"
 local Camera = Object:extend()
 local assets = require "assets"
 
-function Camera:new(x, y, w, h, followSpeed)
+function Camera:new(x, y, w, h, followSpeed, zoomSpeed)
 	self.cam = gamera.new(x or 0, y or 0, w or G.width, h or G.height)
 	self.pos = {
 		x = x or 0,
@@ -25,6 +25,7 @@ function Camera:new(x, y, w, h, followSpeed)
 
 	self.followTarget = nil -- must be GameObject type
 	self.followSpeed = followSpeed or 10
+	self.zoomSpeed = zoomSpeed or 3
 
 	return self
 end
@@ -56,7 +57,7 @@ function Camera:update(dt)
 		self.pos.x = _.lerp(self.pos.x, f.pos.x, dt * self.followSpeed)
 		self.pos.y = _.lerp(self.pos.y, f.pos.y, dt * self.followSpeed)
 	end
-	local z = _.lerp(self.cam.scale, self.zoom, dt * 5)
+	local z = _.lerp(self.cam.scale, self.zoom, dt * self.zoomSpeed)
 	self.cam:setScale(z)
 	self.cam:setPosition(self.pos.x + self.offset.x, self.pos.y + self.offset.y)
 end

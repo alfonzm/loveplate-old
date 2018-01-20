@@ -9,13 +9,14 @@ local Bullet = require "entities.bullet"
 
 local Player = GameObject:extend()
 
-function Player:new(x, y)
+function Player:new(x, y, playerNo)
 	Player.super.new(self, x, y)
 	self.name = "Player"
 
 	-- tags
 	self.isPlayer = true
-	self.tag = "player1"
+	self.playerNo = playerNo
+	self.tag = "player"
 
 	-- draw/sprite component
 	self.layer = G.layers.player
@@ -44,7 +45,11 @@ function Player:new(x, y)
 	}
 
 	-- particles
-	self:setupParticles()
+	self.trailPs = Particles()
+	local playerTrail = require "entities.particles.playerTrail"
+	if self.playerNo == 2 then playerTrail.colors = {82, 127, 157, 255} end
+	self.trailPs:load(playerTrail)
+	scene:addEntity(self.trailPs)
 
 	-- collider adjustments
 	self.collidableTags = {"isEnemy"}
@@ -121,27 +126,11 @@ function Player:shoot()
 	scene:addEntity(b)
 end
 
-function Player:setupParticles()
-	self.trailPs = Particles()
-	-- self.trailPs.ps:setPosition(self.pos.x, self.pos.y)
-	-- self.trailPs.ps:setParticleLifetime(0.2, 2)
-	-- self.trailPs.ps:setDirection(1.5*3.14)
-	-- self.trailPs.ps:setSpread(3.14/3)
-	-- self.trailPs.ps:setLinearAcceleration(0, 400)
-	-- self.trailPs.ps:setLinearDamping(50)
-	-- self.trailPs.ps:setSpin(0, 30)
-	-- self.trailPs.ps:setColors(82, 127, 57, 255)
-	-- self.trailPs.ps:setRotation(0, 2*3.14)
-	-- self.trailPs.ps:setInsertMode('random')
-	-- self.trailPs.ps:setSizes(0.4, 0)
-	scene:addEntity(self.trailPs)
-end
-
 function Player:moveControls(dt)
-	local left = Input.isDown('left')
-	local right = Input.isDown('right')
-	local up = Input.isDown('up')
-	local down = Input.isDown('down')
+	local left = Input.isDown(self.playerNo .. '_left')
+	local right = Input.isDown(self.playerNo .. '_right')
+	local up = Input.isDown(self.playerNo .. '_up')
+	local down = Input.isDown(self.playerNo .. '_down')
 	local rotate = Input.isDown('rotate')
 
 	if rotate then
