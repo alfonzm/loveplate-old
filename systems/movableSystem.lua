@@ -22,7 +22,7 @@ local System = require "lib.knife.system"
 
 local movableSystem = System(
 	{ "movable" },
-	function(movable, e, dt)
+	function(movable, e, dt)		
 		local mov = movable
 		local vel, accel, maxVel, drag = mov.velocity, mov.acceleration, mov.maxVelocity, mov.drag
 

@@ -14,10 +14,9 @@ local player = {}
 
 function PlayState:enter()
 	PlayState.super.enter(self)
+	scene = self
 
 	player = Player(300, 50)
-
-	scene = self
 
 	-- self:addEntity(Bullet(100, 100, 45, 50))
 	

@@ -1,3 +1,4 @@
+local _ = require "lib.lume"
 local Object = require "lib.classic"
 local timer = require "lib.hump.timer"
 
@@ -62,6 +63,18 @@ end
 
 function GameObject:selfDestructIn(seconds)
 	timer.after(seconds, function() self.toRemove = true end)
+end
+
+function GameObject:distanceFrom(gameobject)
+	return _.distance(self.pos.x, self.pos.y, gameobject.pos.x, gameobject.pos.y)
+end
+
+function GameObject:getNearbyEntities(distance, tag)
+	return scene:getNearbyEntitiesFromSource(self, distance, tag)
+end
+
+function GameObject:getNearestEntity(withDistance, tag)
+	return scene:getNearestEntityFromSource(self, withDistance, tag)
 end
 
 function GameObject:collisionFilter(other)

@@ -17,6 +17,7 @@ local drawSystem = require "systems.drawSystem"
 local collisionSystem = require "systems.collisionSystem"
 local movableSystem = require "systems.movableSystem"
 local moveTowardsAngleSystem = require "systems.moveTowardsAngleSystem"
+local moveTowardsPositionSystem = require "systems.moveTowardsPositionSystem"
 
 local Camera = require "alphonsus.camera"
 local Input = require "alphonsus.input"
@@ -58,10 +59,9 @@ end
 
 function Scene:update(dt)
 	for i, e in ipairs(self.entities) do
-		-- print(e.name .. " " .. tostring(self.camera:isPointVisible(e.pos.x, e.pos.y)))
-		-- print(e.name .. " " .. e.pos.x)
 		updateSystem(e, e, dt)
 		moveTowardsAngleSystem(e, e, dt)
+		moveTowardsPositionSystem(e, e, dt)
 		movableSystem(e, e, dt)
 		collisionSystem(e, e, self.bumpWorld)
 		removeSystem(e, i, self.entities, self.bumpWorld)
@@ -72,6 +72,7 @@ function Scene:update(dt)
 	Input.clear()
 end
 
+-- basically the update function for states/scenes
 function Scene:stateUpdate(dt)
 end
 
@@ -90,6 +91,38 @@ function Scene:draw()
 		love.graphics.print("Current FPS: "..tostring(love.timer.getFPS()), 10, 10)
 		love.graphics.print("Game Objects: "..tostring(#self.entities), 10, 25)
 	end
+end
+
+-- HELPER FUNCTIONS
+function Scene:getNearestEntityFromSource(source, maxDistance, tag)
+	-- get visible entities except source
+	local filteredEntities = _.reject(self.entities, function(e)
+		return source.pos.x == e.pos.x and source.pos.y == e.pos.y
+	end)
+
+	if tag then
+		filteredEntities = _.filter(filteredEntities, function(e) return e.tag == tag end)
+	end
+
+	local visibleEntities = self.camera:getVisibleEntities(filteredEntities)
+
+	if maxDistance then
+		-- filter max distance
+		visibleEntities = _.filter(visibleEntities, function(e) return e:distanceFrom(source) < maxDistance end)
+	end
+
+	-- sort visible entities by distance to source (ascending)
+	local sortedEntities = _.sort(visibleEntities, function(a,b)
+		return a:distanceFrom(source) < b:distanceFrom(source)
+	end)
+
+	return sortedEntities[1]
+end
+
+function Scene:getNearbyEntitiesFromSource(source, distance, tag)
+	return _.filter(self.entities, function(e)
+		return _.distance(source.pos.x, source.pos.y, e.pos.x, e.pos.y) < distance and e.tag == tag
+	end)
 end
 
 return Scene

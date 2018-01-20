@@ -3,6 +3,8 @@ local assets = {}
 love.graphics.setDefaultFilter("nearest", "nearest")
 
 -- Images
+assets.whiteCircle = love.graphics.newImage("assets/img/white_circle.png")
+assets.whiteSquare = love.graphics.newImage("assets/img/white_square.png")
 assets.player = love.graphics.newImage("assets/img/anim.png")
 assets.bg = love.graphics.newImage("assets/img/bg.png")
 

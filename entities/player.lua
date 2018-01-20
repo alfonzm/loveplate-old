@@ -1,5 +1,6 @@
 local GameObject = require "alphonsus.gameobject"
 local Input = require "alphonsus.input"
+local Particles = require "alphonsus.particles"
 local anim8 = require "lib.anim8"
 local _ = require "lib.lume"
 local assets = require "assets"
@@ -14,7 +15,7 @@ function Player:new(x, y)
 
 	-- tags
 	self.isPlayer = true
-	self.tag = "Player1"
+	self.tag = "player1"
 
 	-- draw/sprite component
 	self.layer = G.layers.player
@@ -42,6 +43,9 @@ function Player:new(x, y)
 		speed = { x = speed, y = speed } -- used to assign to acceleration
 	}
 
+	-- particles
+	self:setupParticles()
+
 	-- collider adjustments
 	self.collidableTags = {"isEnemy"}
 	-- self.nonCollidableTags = {"isSquare"}
@@ -65,6 +69,13 @@ end
 function Player:update(dt)
 	self:moveControls(dt)
 	self:shootControls()
+
+	if self.trailPs then
+		local x, y = self:getMiddlePosition()
+		self.trailPs.pos.x = x + _.random(-5,5)
+		self.trailPs.pos.y = y + 10
+		self.trailPs.ps:emit(1)
+	end
 
 	if self.platformer then
 		local jump = love.keyboard.isDown('z')
@@ -100,32 +111,31 @@ function Player:jump()
 end
 
 function Player:shoot()
-	local angle = self.direction == Direction.right and 90 or -90
-	local speed = 200 * _.sign(angle)
-
-	-- local x, y = self:getMiddlePosition()
+	local angle = (self.direction == Direction.right and 0 or 180)
+	local speed = 150
 	local x, y = self.pos.x, self.pos.y
 	local b = Bullet(x, y, angle, speed, self)
+	b.target = self:getNearestEntity(nil, "enemy")
+	-- if b.target then print(b.target.name) end
 	
 	scene:addEntity(b)
 end
 
--- function Player:setupParticles()
--- 	self.trailPs = ParticleSystem()
--- 	self.trailPs:setDrawLayer("playerParticles")
--- 	self.trailPs.ps:setPosition(push:getWidth()/2, push:getHeight()/2)
--- 	self.trailPs.ps:setParticleLifetime(0.2, 2)
--- 	self.trailPs.ps:setDirection(1.5*3.14)
--- 	self.trailPs.ps:setSpread(3.14/3)
--- 	self.trailPs.ps:setLinearAcceleration(0, 400)
--- 	self.trailPs.ps:setLinearDamping(50)
--- 	self.trailPs.ps:setSpin(0, 30)
--- 	self.trailPs.ps:setColors(82, 127, 57, 255)
--- 	self.trailPs.ps:setRotation(0, 2*3.14)
--- 	self.trailPs.ps:setInsertMode('random')
--- 	self.trailPs.ps:setSizes(0.4, 0)
--- 	world:add(self.trailPs)
--- end
+function Player:setupParticles()
+	self.trailPs = Particles()
+	-- self.trailPs.ps:setPosition(self.pos.x, self.pos.y)
+	-- self.trailPs.ps:setParticleLifetime(0.2, 2)
+	-- self.trailPs.ps:setDirection(1.5*3.14)
+	-- self.trailPs.ps:setSpread(3.14/3)
+	-- self.trailPs.ps:setLinearAcceleration(0, 400)
+	-- self.trailPs.ps:setLinearDamping(50)
+	-- self.trailPs.ps:setSpin(0, 30)
+	-- self.trailPs.ps:setColors(82, 127, 57, 255)
+	-- self.trailPs.ps:setRotation(0, 2*3.14)
+	-- self.trailPs.ps:setInsertMode('random')
+	-- self.trailPs.ps:setSizes(0.4, 0)
+	scene:addEntity(self.trailPs)
+end
 
 function Player:moveControls(dt)
 	local left = Input.isDown('left')
