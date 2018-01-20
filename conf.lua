@@ -11,16 +11,17 @@ G = {
   gravity = -1500,
 
   layers = {
-    bg         = 100000,
-    default    = 200000,
-    tiles      = 300000,
-    player     = 400000,
-    enemy      = 500000,
-    particles  = 500010,
-    explosion  = 600000,
-    bullet     = 700000,
+    bg         = 100,
+    default    = 200,
+    tiles      = 300,
+    player     = 400,
+    enemy      = 500,
+    particles  = 510,
+    explosion  = 600,
+    bullet     = 700,
+    ui         = 999,
   }
-} 
+}
 
 function love.conf(t)
   t.window.title = G.title

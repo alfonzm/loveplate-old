@@ -19,7 +19,7 @@ function GameObject:new(x, y, w, h)
 	self.isAlive = true
 	self.toRemove = false
 
-	self.visible = true
+	self.isVisible = true
 	self.isSolid = true
 
 	-- draw layer

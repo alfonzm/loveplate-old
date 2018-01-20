@@ -12,6 +12,7 @@ local timer = require "lib.hump.timer"
 local assets = require "assets"
 
 local PlayState = require "playstate"
+local MenuState = require "menustate"
 
 function love.load()
 	love.mouse.setVisible(false)
@@ -52,7 +53,8 @@ function love.load()
 	-- setup Gamestate
 	Gamestate.registerEvents()
 	playState = PlayState()
-	Gamestate.switch(playState)
+	menuState = MenuState()
+	Gamestate.switch(menuState)
 end
 
 function love.update(dt)

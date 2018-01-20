@@ -12,8 +12,12 @@ local Enemy = require "entities.enemy"
 
 local PlayState = Scene:extend()
 
+-- entities
 local player = {}
+local player2 = {}
+local middlePoint = {}
 
+-- helper function
 function getMiddlePoint(pos1, pos2)
 	return (pos1.x + pos2.x)/2 + player.width/2, (pos1.y + pos2.y)/2 - player.width/2
 end
@@ -27,8 +31,6 @@ function PlayState:enter()
 
 	middlePoint = GameObject(getMiddlePoint(player.pos, player2.pos),0,0)
 	middlePoint.collider = nil
-
-	-- self:addEntity(Bullet(100, 100, 45, 50))
 	
 	-- spawn random squares
 	for i=10,30 do
