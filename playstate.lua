@@ -12,6 +12,7 @@ local Square = require "entities.square"
 local Player = require "entities.player"
 local Bullet = require "entities.bullet"
 local Enemy = require "entities.enemy"
+local TileMap = require "alphonsus.tilemap"
 
 local PlayState = Scene:extend()
 
@@ -19,6 +20,7 @@ local PlayState = Scene:extend()
 local player = {}
 local player2 = {}
 local middlePoint = {}
+local tileMap = {}
 
 -- helper function
 function getMiddlePoint(pos1, pos2)
@@ -29,41 +31,42 @@ function PlayState:enter()
 	PlayState.super.enter(self)
 	scene = self
 
-	sepiaShader = love.graphics.newShader('alphonsus/shaders/sepia.fs')
+	-- setup tile map
+	tileMap = TileMap()
+	self:addEntity(tileMap)
 
+	-- setup players
 	player = Player(300, 50, 1)
 	player2 = Player(200, 50, 2)
-
-	middlePoint = GameObject(getMiddlePoint(player.pos, player2.pos),0,0)
-	middlePoint.collider = nil
-	
-	-- spawn random squares
-	for i=10,30 do
-		self:addEntity(Square(i * G.tile_size, 10 * G.tile_size))
-	end
-	self:addEntity(Square(10 * G.tile_size, 12 * G.tile_size))
-	self:addEntity(Square(11 * G.tile_size, 8 * G.tile_size))
-	self:addEntity(Square(10 * G.tile_size, 8 * G.tile_size))
-
-	self:addEntity(Enemy(14 * G.tile_size, 7 * G.tile_size))
-
-	-- for i=1,50 do
-	-- 	tile = Square(math.random(10, 100) * G.tile_size, math.random(10, 100) * G.tile_size)
-	-- 	tile.color = {255,0,0}
-	-- 	self:addEntity(tile)
-	-- end
 
 	self:addEntity(player)
 	self:addEntity(player2)
 
+	middlePoint = GameObject(getMiddlePoint(player.pos, player2.pos),0,0)
+	middlePoint.collider = nil
+	
+	-- spawn random tiles
+	-- for i=10,30 do
+	-- 	self:addEntity(Square(i * G.tile_size, 10 * G.tile_size))
+	-- end
+	-- self:addEntity(Square(10 * G.tile_size, 12 * G.tile_size))
+	-- self:addEntity(Square(11 * G.tile_size, 8 * G.tile_size))
+	-- self:addEntity(Square(10 * G.tile_size, 8 * G.tile_size))
+
+	-- add sample enemy
+	self:addEntity(Enemy(14 * G.tile_size, 7 * G.tile_size))
+
+	-- setup camera
 	self.camera:setPosition(middlePoint.pos.x, middlePoint.pos.y)
 	self.camera:startFollowing(middlePoint, 0, 0)
 	self.camera.followSpeed = 5
 
 	-- setup shaders
 	PaletteSwitcher.init('assets/img/palettes.png', 'alphonsus/shaders/palette.fs');
-	effect = moonshine(moonshine.effects.filmgrain)
+	sepiaShader = love.graphics.newShader('alphonsus/shaders/sepia.fs')
+	bloomShader = love.graphics.newShader('alphonsus/shaders/bloom.fs')
 
+	effect = moonshine(moonshine.effects.filmgrain)
 	-- effect.filmgrain.size = 2
 end
 
@@ -113,15 +116,13 @@ function PlayState:draw()
 	-- end)
 
 	-- palette switcher
-	PaletteSwitcher.set();
+	-- PaletteSwitcher.set();
+	-- love.graphics.setShader(bloomShader)
+
 	PlayState.super.draw(self)
-	PaletteSwitcher.unset()
 
-	-- manual
-	-- love.graphics.setShader(sepiaShader)
-	-- PlayState.super.draw(self)
+	-- PaletteSwitcher.unset()
 	-- love.graphics.setShader()
-
 end
 
 return PlayState
