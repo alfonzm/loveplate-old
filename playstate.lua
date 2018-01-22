@@ -1,8 +1,11 @@
 local Scene = require "alphonsus.scene"
 local Input = require "alphonsus.input"
 local GameObject = require "alphonsus.gameobject"
+
+local PaletteSwitcher = require 'lib/PaletteSwitcher'
 local shack = require "lib.shack"
 local _ = require "lib.lume"
+local moonshine = require "lib.moonshine"
 local Gamestate = require "lib.hump.gamestate"
 
 local Square = require "entities.square"
@@ -25,6 +28,8 @@ end
 function PlayState:enter()
 	PlayState.super.enter(self)
 	scene = self
+
+	sepiaShader = love.graphics.newShader('alphonsus/shaders/sepia.fs')
 
 	player = Player(300, 50, 1)
 	player2 = Player(200, 50, 2)
@@ -54,6 +59,12 @@ function PlayState:enter()
 	self.camera:setPosition(middlePoint.pos.x, middlePoint.pos.y)
 	self.camera:startFollowing(middlePoint, 0, 0)
 	self.camera.followSpeed = 5
+
+	-- setup shaders
+	PaletteSwitcher.init('assets/img/palettes.png', 'alphonsus/shaders/palette.fs');
+	effect = moonshine(moonshine.effects.filmgrain)
+
+	-- effect.filmgrain.size = 2
 end
 
 function PlayState:stateUpdate(dt)
@@ -96,7 +107,21 @@ function PlayState:stateUpdate(dt)
 end
 
 function PlayState:draw()
+	-- moonshine shader
+	-- effect(function()
+		-- PlayState.super.draw(self)
+	-- end)
+
+	-- palette switcher
+	PaletteSwitcher.set();
 	PlayState.super.draw(self)
+	PaletteSwitcher.unset()
+
+	-- manual
+	-- love.graphics.setShader(sepiaShader)
+	-- PlayState.super.draw(self)
+	-- love.graphics.setShader()
+
 end
 
 return PlayState

@@ -28,6 +28,7 @@ function Scene:init()
 end
 
 function Scene:new()
+	self.bgColor = {0,0,0,255}
 	return self
 end
 
@@ -79,6 +80,9 @@ end
 function Scene:draw()
 	push:start()
 	self.camera.cam:draw(function(l,t,w,h)
+		love.graphics.setColor(unpack(self.bgColor))
+		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+		love.graphics.setColor(255,255,255,255)
 		shack:apply()
 		-- love.graphics.draw(assets.bg, 0, 0)
 		for _, e in ipairs(_.sort(self.entities, function(a,b) return a.layer < b.layer end)) do

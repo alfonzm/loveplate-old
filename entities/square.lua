@@ -8,7 +8,7 @@ function Square:new(x, y, color, w, h)
 	self.isSquare = true
 	self.isSolid = true
 	self.isLayerYPos = true
-	self.color = color or {0,255,0}
+	self.color = color or {100,255,100}
 
 	self.nonCollidableTags = {"isSquare"}
 
