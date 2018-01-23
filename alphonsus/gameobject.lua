@@ -38,14 +38,14 @@ function GameObject:new(x, y, w, h)
 	self.angle = 0 -- in radians
 
 	-- collider component
-	self.collider = {
-		x = x - self.offset.x,
-		y = y - self.offset.y,
-		w = self.width,
-		h = self.height,
-		ox = 0,
-		oy = 0
-	}
+	-- self.collider = {
+	-- 	x = x - self.offset.x,
+	-- 	y = y - self.offset.y,
+	-- 	w = self.width,
+	-- 	h = self.height,
+	-- 	ox = 0,
+	-- 	oy = 0
+	-- }
 
 	-- used for collision filters in collisionSystem
 	-- if collides with entities with these tags, they will "slide"
@@ -86,8 +86,11 @@ function GameObject:collisionFilter(other)
 		if other[tag] then return "cross" end
 	end
 
-	if self.isSolid and other.isSolid then return "slide" end
-	return "cross"
+	if self.isSolid then
+		if other.isOneWay then return "onewayplatform" end
+		if other.isSolid then return "slide" end
+		return "cross"
+	end
 end
 
 return GameObject

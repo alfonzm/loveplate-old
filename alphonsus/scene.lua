@@ -29,6 +29,9 @@ end
 
 function Scene:new()
 	self.bgColor = {0,0,0,255}
+	
+	-- setup collision world
+	self.bumpWorld = bump.newWorld()
 	return self
 end
 
@@ -39,8 +42,6 @@ function Scene:enter()
 	self.camera = Camera(0, 0, G.width, G.height)
 	self.camera.cam:setWindow(0, 0, G.width, G.height)
 
-	-- setup collision world
-	self.bumpWorld = bump.newWorld()
 end
 
 -- Add entity to ECS and bump world

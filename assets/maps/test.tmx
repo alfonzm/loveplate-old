@@ -1,7 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="16" tileheight="16" infinite="0" nextobjectid="1">
+<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="10" height="8" tilewidth="16" tileheight="16" infinite="0" nextobjectid="2">
  <tileset firstgid="1" source="tiles.tsx"/>
- <layer name="Tile Layer 1" width="10" height="8">
+ <layer name="tiles" width="10" height="8">
+  <properties>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+3,1,2,1,2,1,1,1,2,4
+</data>
+ </layer>
+ <layer name="oneway" width="10" height="8">
+  <properties>
+   <property name="isOneWay" type="bool" value="true"/>
+   <property name="isSolid" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,33,34,33,34,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer name="decor" width="10" height="8">
+  <properties>
+   <property name="isDecor" type="bool" value="true"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,
@@ -9,8 +43,8 @@
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,
-0,0,0,5,0,0,6,0,5,0,
-3,1,2,1,2,1,1,1,2,4
+0,6,0,5,0,0,0,7,5,0,
+0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
 </map>

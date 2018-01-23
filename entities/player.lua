@@ -51,7 +51,15 @@ function Player:new(x, y, playerNo)
 	self.trailPs:load(playerTrail)
 	scene:addEntity(self.trailPs)
 
-	-- collider adjustments
+	-- collider
+	self.collider = {
+		x = x - self.offset.x,
+		y = y - self.offset.y,
+		w = self.width,
+		h = self.height,
+		ox = 0,
+		oy = 0
+	}
 	self.collidableTags = {"isEnemy"}
 	-- self.nonCollidableTags = {"isSquare"}
 	-- self.collider.ox = G.tile_size/2 - G.tile_size/4

@@ -32,7 +32,7 @@ function PlayState:enter()
 	scene = self
 
 	-- setup tile map
-	tileMap = TileMap()
+	tileMap = TileMap(nil, nil, self.bumpWorld)
 	self:addEntity(tileMap)
 
 	-- setup players

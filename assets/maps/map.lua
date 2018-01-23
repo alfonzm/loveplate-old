@@ -8,7 +8,7 @@ return {
   height = 8,
   tilewidth = 16,
   tileheight = 16,
-  nextobjectid = 1,
+  nextobjectid = 2,
   properties = {},
   tilesets = {
     {
@@ -40,7 +40,7 @@ return {
   layers = {
     {
       type = "tilelayer",
-      name = "Tile Layer 1",
+      name = "tiles",
       x = 0,
       y = 0,
       width = 10,
@@ -49,7 +49,62 @@ return {
       opacity = 1,
       offsetx = 0,
       offsety = 0,
-      properties = {},
+      properties = {
+        ["isSolid"] = true
+      },
+      encoding = "lua",
+      data = {
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        3, 1, 2, 1, 2, 1, 1, 1, 2, 4
+      }
+    },
+    {
+      type = "tilelayer",
+      name = "oneway",
+      x = 0,
+      y = 0,
+      width = 10,
+      height = 8,
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      properties = {
+        ["isOneWay"] = true,
+        ["isSolid"] = true
+      },
+      encoding = "lua",
+      data = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 33, 34, 33, 34, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+    },
+    {
+      type = "tilelayer",
+      name = "decor",
+      x = 0,
+      y = 0,
+      width = 10,
+      height = 8,
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      properties = {
+        ["isDecor"] = true
+      },
       encoding = "lua",
       data = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -58,8 +113,8 @@ return {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 5, 0, 0, 6, 0, 5, 0,
-        3, 1, 2, 1, 2, 1, 1, 1, 2, 4
+        0, 6, 0, 5, 0, 0, 0, 7, 5, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0
       }
     }
   }
