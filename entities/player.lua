@@ -111,7 +111,7 @@ end
 -- end
 
 function Player:shootControls()
-	if Input.wasPressed('shoot') then
+	if Input.wasPressed(self.playerNo .. '_shoot') or Input.wasGamepadPressed('a', self.playerNo) then
 		self:shoot()
 	end
 end
@@ -135,10 +135,10 @@ function Player:shoot()
 end
 
 function Player:moveControls(dt)
-	local left = Input.isDown(self.playerNo .. '_left')
-	local right = Input.isDown(self.playerNo .. '_right')
-	local up = Input.isDown(self.playerNo .. '_up')
-	local down = Input.isDown(self.playerNo .. '_down')
+	local left = Input.isDown(self.playerNo .. '_left') or Input.isAxisDown(self.playerNo, 'leftx', '<')
+	local right = Input.isDown(self.playerNo .. '_right') or Input.isAxisDown(self.playerNo, 'leftx', '>')
+	local up = Input.isDown(self.playerNo .. '_up') or Input.isAxisDown(self.playerNo, 'lefty', '<')
+	local down = Input.isDown(self.playerNo .. '_down') or Input.isAxisDown(self.playerNo, 'lefty', '>')
 	local rotate = Input.isDown('rotate')
 
 	if rotate then

@@ -22,7 +22,7 @@ function love.load()
 	local gameWidth, gameHeight
 	if G.fullscreen then
 		windowWidth, windowHeight = love.window.getDesktopDimensions()
-		gameWidth, gameHeight = windowWidth / G.scale, windowHeight / G.scale
+		gameWidth, gameHeight = love.window.getDesktopDimensions()
 	else
 		gameWidth, gameHeight = G.width, G.height
 		windowWidth, windowHeight = G.width * G.scale, G.height * G.scale
@@ -34,7 +34,6 @@ function love.load()
 
 	-- register controls
 	Input.register({
-		["shoot"]  = { "space" },
 		["zoomIn"] = {"1"},
 		["zoomOut"] = {"2"},
 		["rotate"] = {"3"},
@@ -43,11 +42,13 @@ function love.load()
 		["1_right"] = {"d"},
 		["1_down"] = {"s"},
 		["1_up"] = {"w"},
+		["1_shoot"]  = { "space", gamepad = { "a" }},
 
 		["2_left"] = {"left"},
 		["2_right"] = {"right"},
 		["2_down"] = {"down"},
 		["2_up"] = {"up"},
+		["2_shoot"]  = { "]", gamepad = { "a" } },
 	})
 
 	-- setup Gamestate

@@ -39,9 +39,14 @@ function Scene:enter()
 	self.entities = {}
 
 	-- setup cam
-	self.camera = Camera(0, 0, G.width, G.height)
-	self.camera.cam:setWindow(0, 0, G.width, G.height)
+	self.camera = Camera()
 
+	-- setup gamepads
+	local joysticks = love.joystick.getJoysticks()
+	for i, j in ipairs(joysticks) do
+		Input.gamepads[i] = { buttons = {} }
+		Input.gamepadPressed[i] = {}
+	end
 end
 
 -- Add entity to ECS and bump world
@@ -53,10 +58,6 @@ function Scene:addEntity(e)
 	if col and col.x and col.y and col.w and col.h then
 		self.bumpWorld:add(e, col.x, col.y, col.w, col.h)
 	end
-end
-
-function Scene:keypressed(k)
-	Input.onKeyPress(k)
 end
 
 function Scene:update(dt)
@@ -98,7 +99,33 @@ function Scene:draw()
 	end
 end
 
--- HELPER FUNCTIONS
+-- ====================================
+--              CONTROLS
+-- ====================================
+
+function Scene:keypressed(k)
+	Input.onKeyPress(k)
+end
+
+function Scene:gamepadaxis(j, axis, value)
+	local gamepadId, gamepadInstanceId = j:getID()
+	Input.gamepads[gamepadId][axis] = value
+end
+
+function Scene:gamepadpressed(j, button)
+	local gamepadId, gamepadInstanceId = j:getID()
+	Input.gamepadPressed[gamepadId][button] = true
+end
+
+function Scene:gamepadreleased(j, button)
+	local gamepadId, gamepadInstanceId = j:getID()
+	Input.gamepads[gamepadId][button] = false
+end
+
+
+-- ====================================
+--          HELPER FUNCTIONS
+-- ====================================
 function Scene:getNearestEntityFromSource(source, maxDistance, tag)
 	-- get visible entities except source
 	local filteredEntities = _.reject(self.entities, function(e)

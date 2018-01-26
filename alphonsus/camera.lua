@@ -6,8 +6,16 @@ local shack = require "lib.shack"
 local Camera = Object:extend()
 local assets = require "assets"
 
-function Camera:new(x, y, w, h, followSpeed, zoomSpeed)
-	self.cam = gamera.new(x or 0, y or 0, w or G.width, h or G.height)
+function Camera:new(followSpeed, zoomSpeed)
+	if G.fullscreen then
+		desktopWidth, desktopHeight = love.window.getDesktopDimensions()
+		self.cam = gamera.new(x or 0, y or 0, desktopWidth, desktopHeight)
+		self.cam:setWindow(0, 0, desktopWidth, desktopHeight)
+	else
+		self.cam = gamera.new(x or 0, y or 0, G.width, G.height)
+		self.cam:setWindow(0, 0, G.width, G.height)
+	end
+
 	self.pos = {
 		x = x or 0,
 		y = y or 0
@@ -18,10 +26,12 @@ function Camera:new(x, y, w, h, followSpeed, zoomSpeed)
 		y = 0
 	}
 
+	self.constantZoom = G.fullscreen and G.scale or 1.0
 	self.zoom = 1.0
+	self.cam:setScale(self.constantZoom * self.zoom)
 
 	-- setup default boundaries
-	self.cam:setWorld(0,0,1000,10000)
+	self.cam:setWorld(0,0,10000,10000)
 
 	self.followTarget = nil -- must be GameObject type
 	self.followSpeed = followSpeed or 10
@@ -57,9 +67,9 @@ function Camera:update(dt)
 		self.pos.x = _.lerp(self.pos.x, f.pos.x, dt * self.followSpeed)
 		self.pos.y = _.lerp(self.pos.y, f.pos.y, dt * self.followSpeed)
 	end
-	local z = _.lerp(self.cam.scale, self.zoom, dt * self.zoomSpeed)
+	local z = _.lerp(self.cam.scale, self.zoom * self.constantZoom, dt * self.zoomSpeed)
 	self.cam:setScale(z)
-	self.cam:setPosition(self.pos.x + self.offset.x, self.pos.y + self.offset.y)
+	self.cam:setPosition(math.floor(self.pos.x + self.offset.x), math.floor(self.pos.y + self.offset.y))
 end
 
 function Camera:shake(amount)

@@ -17,6 +17,7 @@ function TileMap:new(x, y, bumpWorld)
 	local map = sti("assets/maps/map.lua", { "bump" })
 	self.map = map
 	self.map:bump_init(self.bumpWorld)
+	self.map:resize(1000,1000)
 
 	for lindex, layer in ipairs(map.layers) do
 		if layer.properties.isSolid then
@@ -41,7 +42,8 @@ function TileMap:new(x, y, bumpWorld)
 		elseif layer.properties.isDecor then
 			for y, tiles in ipairs(layer.data) do
 				for x, tile in pairs(tiles) do
-					local xpos, ypos = x * map.tilewidth, y * map.tileheight
+					-- local xpos, ypos = x * map.tilewidth, y * map.tileheight
+					-- TODO: add gameobject
 				end
 			end
 		end
@@ -67,8 +69,8 @@ end
 
 function TileMap:draw()
 	local camScale = scene.camera.cam:getScale()
-	local l,t,w,h = scene.camera.cam:getVisible()
-	self.map:draw(-l, -t, camScale, camScale)
+	local l,t = scene.camera.cam:getVisible()
+	self.map:draw(math.floor(-l), math.floor(-t), camScale, camScale)
 
 	local items,len = self.bumpWorld:getItems()
 	for i,item in ipairs(items) do
