@@ -1,5 +1,5 @@
 --
--- MovableSystem
+-- TopdownMovableSystem
 -- by Alphonsus
 --
 -- movement physics
@@ -18,17 +18,19 @@
 
 local _ = require "lib.lume"
 local vector = require "lib.hump.vector-light"
+local Vec = require "lib.hump.vector"
 local System = require "lib.knife.system"
 
-local movableSystem = System(
+local topdownMovableSystem = System(
 	{ "movable" },
 	function(movable, e, dt)		
 		local mov = movable
 		local vel, accel, maxVel, drag = mov.velocity, mov.acceleration, mov.maxVelocity, mov.drag
 
 		-- Update velocity
-		vel.x = vel.x + accel.x * dt
-		vel.y = vel.y + accel.y * dt
+		vel.x = vel.x + (accel.x * dt)
+		vel.y = vel.y + (accel.y * dt)
+
 		-- Update max velocity
 		if maxVel.x > 0 and math.abs(vel.x) > maxVel.x then
 			vel.x = maxVel.x * _.sign(vel.x)
@@ -36,9 +38,12 @@ local movableSystem = System(
 		if maxVel.y > 0 and math.abs(vel.y) > maxVel.y then
 			vel.y = maxVel.y * _.sign(vel.y)
 		end
+		
 		-- Update position
-		e.pos.x = e.pos.x + vel.x * dt
-		e.pos.y = e.pos.y + vel.y * dt
+		local vx,vy = G.platformer and vector.normalize(vel.x, vel.y) or 1,1
+		e.pos.x = e.pos.x + (vel.x * math.abs(vx)) * dt
+		e.pos.y = e.pos.y + (vel.y * math.abs(vy)) * dt
+
 		-- Apply drag if not accelerating
 		if accel.x == 0 and drag.x > 0 then
 			local sign = _.sign(vel.x)
@@ -55,7 +60,7 @@ local movableSystem = System(
 				if e.platformer.isGrounded then
 					-- warning: hacky
 					-- reset the velocity to near zero if grounded
-					vel.y = vel.y * 0.01
+					vel.y = vel.y * 0.001
 				end
 			else
 				-- topdown physics
@@ -69,4 +74,4 @@ local movableSystem = System(
 	end
 )
 
-return movableSystem
+return topdownMovableSystem

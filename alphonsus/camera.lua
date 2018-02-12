@@ -10,10 +10,8 @@ function Camera:new(followSpeed, zoomSpeed)
 	if G.fullscreen then
 		desktopWidth, desktopHeight = love.window.getDesktopDimensions()
 		self.cam = gamera.new(x or 0, y or 0, desktopWidth, desktopHeight)
-		self.cam:setWindow(0, 0, desktopWidth, desktopHeight)
 	else
 		self.cam = gamera.new(x or 0, y or 0, G.width, G.height)
-		self.cam:setWindow(0, 0, G.width, G.height)
 	end
 
 	self.pos = {
@@ -32,6 +30,7 @@ function Camera:new(followSpeed, zoomSpeed)
 
 	-- setup default boundaries
 	self.cam:setWorld(0,0,10000,10000)
+	self.cam:setWindow(0, 0, G.width, G.height)
 
 	self.followTarget = nil -- must be GameObject type
 	self.followSpeed = followSpeed or 10
@@ -55,21 +54,24 @@ function Camera:setPosition(x, y)
 end
 
 -- target must be GameObject
-function Camera:startFollowing(target, offsetX, offsetY)
+function Camera:startFollowing(target, ox, oy)
 	self.followTarget = target
-	self.offset.x = offsetX or 0
-	self.offset.y = offsetY or 0
+	self.offset.x = ox or 0
+	self.offset.y = oy or 0
 end
 
 function Camera:update(dt)
-	local f = self.followTarget
-	if f then
-		self.pos.x = _.lerp(self.pos.x, f.pos.x, dt * self.followSpeed)
-		self.pos.y = _.lerp(self.pos.y, f.pos.y, dt * self.followSpeed)
-	end
+	local t = self.followTarget
+	local targetX = (t and (t.pos.x + t.offset.x) or 0) + self.offset.x
+	local targetY = (t and (t.pos.y + t.offset.y) or 0) + self.offset.y
+
+	self.pos.x = _.lerp(self.pos.x, targetX, dt * self.followSpeed)
+	self.pos.y = _.lerp(self.pos.y, targetY, dt * self.followSpeed)
+
+	self.cam:setPosition(math.floor(self.pos.x), math.floor(self.pos.y))
+
 	local z = _.lerp(self.cam.scale, self.zoom * self.constantZoom, dt * self.zoomSpeed)
 	self.cam:setScale(z)
-	self.cam:setPosition(math.floor(self.pos.x + self.offset.x), math.floor(self.pos.y + self.offset.y))
 end
 
 function Camera:shake(amount)

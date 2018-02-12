@@ -3,12 +3,13 @@ local Input = require "alphonsus.input"
 local GameObject = require "alphonsus.gameobject"
 
 local PaletteSwitcher = require 'lib/PaletteSwitcher'
+local bump = require "lib.bump"
 local shack = require "lib.shack"
 local _ = require "lib.lume"
 local moonshine = require "lib.moonshine"
 local Gamestate = require "lib.hump.gamestate"
 
-local Square = require "entities.square"
+local Square = require "alphonsus.square"
 local Player = require "entities.player"
 local Bullet = require "entities.bullet"
 local Enemy = require "entities.enemy"
@@ -30,17 +31,20 @@ end
 function PlayState:enter()
 	PlayState.super.enter(self)
 	scene = self
+	self.bumpWorld = bump.newWorld()
+
+	self.bgColor = {55,25,50}
 
 	-- setup tile map
-	tileMap = TileMap(nil, nil, self.bumpWorld)
+	tileMap = TileMap("assets/maps/map.lua", nil, nil, self.bumpWorld)
 	self:addEntity(tileMap)
 
 	-- setup players
-	player = Player(300, 50, 1)
-	player2 = Player(200, 50, 2)
+	player = Player(100, 50, 1)
+	player2 = Player(50, 50, 2)
 
 	self:addEntity(player)
-	self:addEntity(player2)
+	-- self:addEntity(player2)
 
 	middlePoint = GameObject(getMiddlePoint(player.pos, player2.pos),0,0)
 	middlePoint.collider = nil
@@ -54,11 +58,11 @@ function PlayState:enter()
 	-- self:addEntity(Square(10 * G.tile_size, 8 * G.tile_size))
 
 	-- add sample enemy
-	self:addEntity(Enemy(14 * G.tile_size, 7 * G.tile_size))
+	-- self:addEntity(Enemy(14 * G.tile_size, 7 * G.tile_size))
 
 	-- setup camera
 	self.camera:setPosition(middlePoint.pos.x, middlePoint.pos.y)
-	self.camera:startFollowing(middlePoint, 0, 0)
+	self.camera:startFollowing(player)
 	self.camera.followSpeed = 5
 
 	-- setup shaders
@@ -79,14 +83,14 @@ function PlayState:stateUpdate(dt)
 
 	local d = _.distance(player.pos.x, player.pos.y, player2.pos.x, player2.pos.y)
 
-	self.camera.zoom = 1
-	if d > G.height then
-		self.camera.zoom = 0.8
-	end
+	-- self.camera.zoom = 1
+	-- if d > G.height then
+	-- 	self.camera.zoom = 0.8
+	-- end
 
-	if d > G.height * 1.5 then
-		self.camera.zoom = 0.6
-	end
+	-- if d > G.height * 1.5 then
+	-- 	self.camera.zoom = 0.6
+	-- end
 
 	if Input.wasKeyPressed('`') then
 		G.debug = not G.debug
@@ -96,16 +100,16 @@ function PlayState:stateUpdate(dt)
 		Gamestate.switch(self)
 	end
 
-	if Input.wasKeyPressed('z') then
-		player:jump()
-	end
+	-- if Input.wasKeyPressed('z') then
+	-- 	player:jump()
+	-- end
 
 	if Input.wasPressed('zoomIn') then
-		self.camera.zoom = self.camera.zoom+0.2
+		self.camera.zoom = self.camera.zoom + 1
 	end
 
 	if Input.wasPressed('zoomOut') then
-		self.camera.zoom = self.camera.zoom-0.2
+		-- self.camera.zoom = self.camera.zoom-1
 	end
 end
 

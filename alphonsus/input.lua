@@ -6,24 +6,6 @@ Input.pressed = {}
 Input.gamepads = {}
 Input.gamepadPressed = {}
 
--- gamepads structure:
--- Input.gamepads = {
--- 	[1] = {
--- 		leftx = 0.5,
--- 		lefty = 0.2,
--- 		a = true
--- 	},
--- 	[2] = {
--- 		leftx = 0.5,
--- 		lefty = 0.2,
--- 		x = false
--- 	},
--- 	pressed = {
--- 		[1] = { a = true },
--- 		[2] = { x = true }
--- 	}
--- }
-
 function Input.register(id, keys)
 	if type(id) == "table" then
 		for k, v in pairs(id) do
@@ -53,7 +35,16 @@ function Input.isAxisDown(joystickId, axis, operator, threshold)
 	end
 end
 
-function Input.wasGamepadPressed(button, joystickId)
+function Input.isGamepadButtonDown(button, joystickId)
+	local j = love.joystick.getJoysticks()[joystickId]
+	if j then
+		return j:isGamepadDown(button)
+	end
+
+	return false
+end
+
+function Input.wasGamepadButtonPressed(button, joystickId)
 	if joystickId then
 		if Input.gamepadPressed[joystickId] then return Input.gamepadPressed[joystickId][button] end
 	else
@@ -94,6 +85,18 @@ function Input.wasPressed(id)
 	local keys = Input.map[id]
 	assert(keys, "Input ID not mapped: " .. id)
 	return _.any(keys, function(k) return Input.pressed[k] end)
+end
+
+function Input.wasPressedByPlayer(id, playerNo)
+	local keys = Input.map[playerNo .. '_' .. id]
+	assert(keys, "Input ID not mapped: " .. playerNo .. '_' .. id)
+	local gamepadButtons = keys['gamepad']
+	if gamepadButtons and _.any(gamepadButtons, function(k)
+		return Input.wasGamepadButtonPressed(k, playerNo)
+	end) then return true end
+	return _.any(keys, function(k)
+		return Input.pressed[k]
+	end)
 end
 
 function Input.clear()

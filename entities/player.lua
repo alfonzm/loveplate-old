@@ -31,25 +31,48 @@ function Player:new(x, y, playerNo)
 	-- physics
 	self.isSolid = true
 	self.direction = Direction.right
-	local maxVelocity = 180
-	local speed = maxVelocity * 10
-	local drag = maxVelocity * 20
 
-	-- movable component
-	self.movable = {
-		velocity = { x = 0, y = 0 },
-		acceleration = { x = 0, y = 0 },
-		drag = { x = drag, y = drag },
-		maxVelocity = { x = maxVelocity, y = maxVelocity },
-		speed = { x = speed, y = speed } -- used to assign to acceleration
-	}
+	if G.platformer then
+		-- platformer setup
+		local maxVelocity = 275
+		local speed = maxVelocity * 10
+		local drag = maxVelocity * 4
+
+		self.movable = {
+			velocity = { x = 0, y = 0 },
+			acceleration = { x = 0, y = 0 },
+			drag = { x = 3200, y = G.gravity },
+			maxVelocity = { x = 200, y = 350 },
+			speed = { x = 2200, y = 0 } -- used to assign to acceleration
+		}
+
+		self.platformer = {
+			wasGrounded = false,
+			isGrounded = false,
+			jumpForce = -300,
+		}
+	else
+		-- topdown setup
+		local maxVelocity = 180
+		local speed = maxVelocity * 10
+		local drag = maxVelocity * 20
+
+		-- movable component
+		self.movable = {
+			velocity = { x = 0, y = 0 },
+			acceleration = { x = 0, y = 0 },
+			drag = { x = drag, y = drag },
+			maxVelocity = { x = maxVelocity, y = maxVelocity },
+			speed = { x = speed, y = speed } -- used to assign to acceleration
+		}
+	end
 
 	-- particles
 	self.trailPs = Particles()
 	local playerTrail = require "entities.particles.playerTrail"
 	if self.playerNo == 2 then playerTrail.colors = {82, 127, 157, 255} end
 	self.trailPs:load(playerTrail)
-	scene:addEntity(self.trailPs)
+	-- scene:addEntity(self.trailPs)
 
 	-- collider
 	self.collider = {
@@ -60,23 +83,21 @@ function Player:new(x, y, playerNo)
 		ox = 0,
 		oy = 0
 	}
+	
 	self.collidableTags = {"isEnemy"}
-	-- self.nonCollidableTags = {"isSquare"}
-	-- self.collider.ox = G.tile_size/2 - G.tile_size/4
-	-- self.collider.oy = G.tile_size/2
-	-- self.collider.w = G.tile_size/2
-	-- self.collider.h = G.tile_size/2
-
-	-- platformer component
-	-- self.platformer = {
-	-- 	isGrounded = false,
-	-- 	jumpForce = -maxVelocity,
-	-- }
 
 	return self
 end
 
-function Player:collide(other)
+function Player:collide(other, col)
+	if other.isSlope then
+		local x = 11*16
+		local y = 9*16
+
+		local y1 = y - (self.pos.x - x) * (32/(4*16))
+		self.pos.y = y1 - 8
+		self.collider.y = y1 - 8
+	end
 end
 
 function Player:update(dt)
@@ -91,7 +112,7 @@ function Player:update(dt)
 	end
 
 	if self.platformer then
-		local jump = love.keyboard.isDown('z')
+		local jump = Input.isKeyDown('space')
 
 		if jump then
 			self.movable.drag.y = G.gravity/2
@@ -111,9 +132,9 @@ end
 -- end
 
 function Player:shootControls()
-	if Input.wasPressed(self.playerNo .. '_shoot') or Input.wasGamepadPressed('a', self.playerNo) then
-		self:shoot()
-	end
+	-- if Input.wasPressed(self.playerNo .. '_shoot') or Input.wasGamepadButtonPressed('a', self.playerNo) then
+	-- 	self:shoot()
+	-- end
 end
 
 function Player:jump()
@@ -121,6 +142,10 @@ function Player:jump()
 		self.platformer.isGrounded = false
 		self.movable.velocity.y = self.platformer.jumpForce
 	end
+end
+
+function Player:onLand()
+	tlog.print("LANDED")
 end
 
 function Player:shoot()
@@ -135,6 +160,9 @@ function Player:shoot()
 end
 
 function Player:moveControls(dt)
+	local jump = Input.wasKeyPressed('space')
+	if jump then self:jump() end
+
 	local left = Input.isDown(self.playerNo .. '_left') or Input.isAxisDown(self.playerNo, 'leftx', '<')
 	local right = Input.isDown(self.playerNo .. '_right') or Input.isAxisDown(self.playerNo, 'leftx', '>')
 	local up = Input.isDown(self.playerNo .. '_up') or Input.isAxisDown(self.playerNo, 'lefty', '<')
@@ -155,13 +183,13 @@ function Player:moveControls(dt)
 		self.movable.acceleration.x = 0
 	end
 
-	if up and not down then
-		self.movable.acceleration.y = -self.movable.speed.y
-	elseif down and not up then
-		self.movable.acceleration.y = self.movable.speed.y
-	else
-		self.movable.acceleration.y = 0
-	end
+	-- if up and not down then
+	-- 	self.movable.acceleration.y = -self.movable.speed.y
+	-- elseif down and not up then
+	-- 	self.movable.acceleration.y = self.movable.speed.y
+	-- else
+	-- 	self.movable.acceleration.y = 0
+	-- end
 end
 
 function Player:draw()

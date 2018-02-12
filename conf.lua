@@ -1,15 +1,15 @@
 G = {
   title = "Game Title",
-  width = 240,
-  height = 180,
+  width = 360,
+  height = 240,
   scale = 3,
   tile_size = 16,
   fullscreen = true,
   fullscreen = false,
   debug = false,
 
-  platformer = false, -- used for gravity logic in movableSystem
-  gravity = -1500,
+  platformer = true,
+  gravity = -1200,
 
   layers = {
     bg         = 100,

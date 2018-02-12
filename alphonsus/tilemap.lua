@@ -5,7 +5,7 @@ local sti = require "lib.sti"
 local TileMap = GameObject:extend()
 local assets =  require "assets"
 
-function TileMap:new(x, y, bumpWorld)
+function TileMap:new(mapPath, x, y, bumpWorld)
 	TileMap.super.new(self, x or 0, y or 0)
 	self.name = "TileMap"
 	self.isTileMap = true
@@ -14,14 +14,25 @@ function TileMap:new(x, y, bumpWorld)
 
 	-- self.map = sti("maps/plain.lua")
 	-- self.map = sti("maps/plain2.lua")
-	local map = sti("assets/maps/map.lua", { "bump" })
+	local map = sti(mapPath, { "bump" })
 	self.map = map
 	self.map:bump_init(self.bumpWorld)
 	self.map:resize(1000,1000)
 
 	for lindex, layer in ipairs(map.layers) do
-		if layer.properties.isSolid then
+		-- solid tile layer
+		if layer.properties.isDecor then
+			for y, tiles in ipairs(layer.data) do
+				for x, tile in pairs(tiles) do
+					-- local xpos, ypos = x * map.tilewidth, y * map.tileheight
+					-- TODO: add gameobject
+				end
+			end
+		elseif layer.data then
 			local isOneWay = layer.properties.isOneWay
+			local isSolid = layer.properties.isSolid
+			local isSlope = layer.properties.isSlope
+
 			for y, tiles in ipairs(layer.data) do
 				for x, tile in pairs(tiles) do
 					local xpos, ypos = (x-1) * map.tilewidth, (y-1) * map.tileheight
@@ -34,16 +45,13 @@ function TileMap:new(x, y, bumpWorld)
 						},
 						name = layer.name,
 						isOneWay = isOneWay,
-						isSolid = true
+						isSolid = isSolid,
+						isSlope = isSlope
 					}
-					bumpWorld:add(bumpObject, xpos, ypos, tile.width, tile.height)
-				end
-			end
-		elseif layer.properties.isDecor then
-			for y, tiles in ipairs(layer.data) do
-				for x, tile in pairs(tiles) do
-					-- local xpos, ypos = x * map.tilewidth, y * map.tileheight
-					-- TODO: add gameobject
+
+					if isOneWay or isSolid or isSlope then
+						bumpWorld:add(bumpObject, xpos, ypos, tile.width, tile.height)
+					end
 				end
 			end
 		end
@@ -78,6 +86,8 @@ function TileMap:draw()
 			local x,y,w,h = item.collider.x, item.collider.y, item.collider.w, item.collider.h
 			if item.isOneWay then
 				love.graphics.setColor(0, 255, 0)
+			elseif item.isSlope then
+				love.graphics.setColor(255, 255, 0)
 			else
 				love.graphics.setColor(255, 0, 0)
 			end

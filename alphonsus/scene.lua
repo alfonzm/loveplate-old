@@ -15,7 +15,8 @@ local removeSystem = require "systems.removeSystem"
 local updateSystem = require "systems.updateSystem"
 local drawSystem = require "systems.drawSystem"
 local collisionSystem = require "systems.collisionSystem"
-local movableSystem = require "systems.movableSystem"
+local platformerMovableSystem = require "systems.platformerMovableSystem"
+local topdownMovableSystem = require "systems.topdownMovableSystem"
 local moveTowardsAngleSystem = require "systems.moveTowardsAngleSystem"
 local moveTowardsPositionSystem = require "systems.moveTowardsPositionSystem"
 
@@ -65,7 +66,11 @@ function Scene:update(dt)
 		updateSystem(e, e, dt)
 		moveTowardsAngleSystem(e, e, dt)
 		moveTowardsPositionSystem(e, e, dt)
-		movableSystem(e, e, dt)
+		if G.platformer then
+			platformerMovableSystem(e, e, dt)
+		else
+			topdownMovableSystem(e, e, dt)
+		end
 		collisionSystem(e, e, self.bumpWorld)
 		removeSystem(e, i, self.entities, self.bumpWorld)
 	end

@@ -3,7 +3,7 @@ local GameObject = require "alphonsus.gameobject"
 local _ = require "lib.lume"
 
 local Circle = require "entities.circle"
-local Square = require "entities.square"
+local Square = require "alphonsus.square"
 local Explosion = require "entities.explosion"
 
 local Bullet = Square:extend()

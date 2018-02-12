@@ -22,7 +22,12 @@ function love.load()
 	local gameWidth, gameHeight
 	if G.fullscreen then
 		windowWidth, windowHeight = love.window.getDesktopDimensions()
-		gameWidth, gameHeight = love.window.getDesktopDimensions()
+
+		local scale = G.scale
+		G.scale = 1
+		gameWidth, gameHeight = windowWidth/scale, windowHeight/scale
+		G.width = gameWidth
+		G.height = gameHeight
 	else
 		gameWidth, gameHeight = G.width, G.height
 		windowWidth, windowHeight = G.width * G.scale, G.height * G.scale
@@ -56,6 +61,7 @@ function love.load()
 	playState = PlayState()
 	menuState = MenuState()
 	Gamestate.switch(menuState)
+	Gamestate.switch(playState)
 end
 
 function love.update(dt)
