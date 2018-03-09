@@ -1,6 +1,6 @@
 local Scene = require "alphonsus.scene"
 local Input = require "alphonsus.input"
-local GameObject = require "alphonsus.gameobject"
+local GameObject = require "alphonsus.entities.GameObject"
 
 local PaletteSwitcher = require 'lib/PaletteSwitcher'
 local bump = require "lib.bump"
@@ -9,11 +9,12 @@ local _ = require "lib.lume"
 local moonshine = require "lib.moonshine"
 local Gamestate = require "lib.hump.gamestate"
 
-local Square = require "alphonsus.square"
+local Square = require "alphonsus.entities.Square"
+local TileMap = require "alphonsus.entities.TileMap"
+
 local Player = require "entities.player"
 local Bullet = require "entities.bullet"
 local Enemy = require "entities.enemy"
-local TileMap = require "alphonsus.tilemap"
 
 local PlayState = Scene:extend()
 
@@ -46,8 +47,8 @@ function PlayState:enter()
 	self:addEntity(player)
 	-- self:addEntity(player2)
 
-	middlePoint = GameObject(getMiddlePoint(player.pos, player2.pos),0,0)
-	middlePoint.collider = nil
+	-- middlePoint = GameObject(getMiddlePoint(player.pos, player2.pos),0,0)
+	-- middlePoint.collider = nil
 	
 	-- spawn random tiles
 	-- for i=10,30 do
@@ -61,7 +62,7 @@ function PlayState:enter()
 	-- self:addEntity(Enemy(14 * G.tile_size, 7 * G.tile_size))
 
 	-- setup camera
-	self.camera:setPosition(middlePoint.pos.x, middlePoint.pos.y)
+	-- self.camera:setPosition(middlePoint.pos.x, middlePoint.pos.y)
 	self.camera:startFollowing(player)
 	self.camera.followSpeed = 5
 
@@ -77,9 +78,9 @@ end
 function PlayState:stateUpdate(dt)
 	PlayState.super.stateUpdate(self, dt)
 
-	local x, y = getMiddlePoint(player.pos, player2.pos)
-	middlePoint.pos.x = x
-	middlePoint.pos.y = y
+	-- local x, y = getMiddlePoint(player.pos, player2.pos)
+	-- middlePoint.pos.x = x
+	-- middlePoint.pos.y = y
 
 	local d = _.distance(player.pos.x, player.pos.y, player2.pos.x, player2.pos.y)
 

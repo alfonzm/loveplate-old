@@ -1,7 +1,7 @@
 local _ = require "lib.lume"
-local GameObject = require "alphonsus.gameobject"
 
-local Square = require "alphonsus.square"
+local GameObject = require "alphonsus.entities.GameObject"
+local Square = require "alphonsus.entities.Square"
 
 local Explosion = Square:extend()
 

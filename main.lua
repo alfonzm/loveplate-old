@@ -1,21 +1,27 @@
 io.stdout:setvbuf("no")
+
+_ = require "lib.lume"
 tlog = require "alphonsus.tlog"
+utils = require "alphonsus.utils"
+assets = require "assets"
 
 local Input = require "alphonsus.input"
 
+local flux = require "lib.flux"
 local Gamestate = require "lib.hump.gamestate"
 local gamera = require "lib.gamera"
 local push = require "lib.push"
 local shack = require "lib.shack"
 local timer = require "lib.hump.timer"
 
-local assets = require "assets"
-
-local PlayState = require "playstate"
-local MenuState = require "menustate"
+local PlayState = require "PlayState"
+local MenuState = require "MenuState"
 
 function love.load()
 	love.mouse.setVisible(false)
+
+	-- load entities
+    local entityFiles = {}
 
 	-- setup push screen
 	local windowWidth, windowHeight
@@ -43,30 +49,24 @@ function love.load()
 		["zoomOut"] = {"2"},
 		["rotate"] = {"3"},
 
-		["1_left"] = {"a"},
-		["1_right"] = {"d"},
-		["1_down"] = {"s"},
-		["1_up"] = {"w"},
-		["1_shoot"]  = { "space", gamepad = { "a" }},
-
-		["2_left"] = {"left"},
-		["2_right"] = {"right"},
-		["2_down"] = {"down"},
-		["2_up"] = {"up"},
-		["2_shoot"]  = { "]", gamepad = { "a" } },
+		["1_left"] = {"left"},
+		["1_right"] = {"right"},
+		["1_down"] = {"down"},
+		["1_up"] = {"up"},
 	})
 
 	-- setup Gamestate
 	Gamestate.registerEvents()
 	playState = PlayState()
 	menuState = MenuState()
-	Gamestate.switch(menuState)
+	-- Gamestate.switch(menuState)
 	Gamestate.switch(playState)
 end
 
 function love.update(dt)
 	shack:update(dt)
 	timer.update(dt)
+	flux.update(dt)
 end
 
 function love.draw()

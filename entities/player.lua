@@ -1,6 +1,7 @@
-local GameObject = require "alphonsus.gameobject"
 local Input = require "alphonsus.input"
-local Particles = require "alphonsus.particles"
+local GameObject = require "alphonsus.entities.GameObject"
+local Particles = require "alphonsus.entities.Particles"
+
 local anim8 = require "lib.anim8"
 local _ = require "lib.lume"
 local assets = require "assets"
@@ -76,12 +77,12 @@ function Player:new(x, y, playerNo)
 
 	-- collider
 	self.collider = {
-		x = x - self.offset.x,
-		y = y - self.offset.y,
+		x = self.pos.x - self.offset.x,
+		y = self.pos.y + self.offset.y,
 		w = self.width,
 		h = self.height,
-		ox = 0,
-		oy = 0
+		ox = -self.offset.x,
+		oy = -self.offset.y
 	}
 	
 	self.collidableTags = {"isEnemy"}

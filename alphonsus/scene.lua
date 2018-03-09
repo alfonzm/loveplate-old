@@ -1,16 +1,18 @@
 -- 
 -- Scene.lua
--- a game scene (like a Unity scene)
+-- a game scene/room/screen
 -- 
 
-local _ = require "lib.lume"
 local Object = require "lib.classic"
 local shack = require "lib.shack"
 local push = require "lib.push"
 local gamera = require "lib.gamera"
 local bump = require "lib.bump"
+local flux = require "lib.flux"
 
-local assets = require "assets"
+local Camera = require "alphonsus.camera"
+local Input = require "alphonsus.input"
+
 local removeSystem = require "alphonsus.systems.removeSystem"
 local updateSystem = require "alphonsus.systems.updateSystem"
 local drawSystem = require "alphonsus.systems.drawSystem"
@@ -19,9 +21,8 @@ local platformerMovableSystem = require "alphonsus.systems.platformerMovableSyst
 local topdownMovableSystem = require "alphonsus.systems.topdownMovableSystem"
 local moveTowardsAngleSystem = require "alphonsus.systems.moveTowardsAngleSystem"
 local moveTowardsPositionSystem = require "alphonsus.systems.moveTowardsPositionSystem"
+local shooterSystem = require "alphonsus.systems.shooterSystem"
 
-local Camera = require "alphonsus.camera"
-local Input = require "alphonsus.input"
 
 local Scene = Object:extend()
 
@@ -66,11 +67,9 @@ function Scene:update(dt)
 		updateSystem(e, e, dt)
 		moveTowardsAngleSystem(e, e, dt)
 		moveTowardsPositionSystem(e, e, dt)
-		if G.platformer then
-			platformerMovableSystem(e, e, dt)
-		else
-			topdownMovableSystem(e, e, dt)
-		end
+		platformerMovableSystem(e, e, dt)
+		topdownMovableSystem(e, e, dt)
+		shooterSystem(e, e, dt)
 		collisionSystem(e, e, self.bumpWorld)
 		removeSystem(e, i, self.entities, self.bumpWorld)
 	end
@@ -86,12 +85,11 @@ end
 
 function Scene:draw()
 	push:start()
+	love.graphics.setColor(unpack(self.bgColor))
+	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+	love.graphics.setColor(255,255,255,255)
 	self.camera.cam:draw(function(l,t,w,h)
-		love.graphics.setColor(unpack(self.bgColor))
-		love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-		love.graphics.setColor(255,255,255,255)
 		shack:apply()
-		-- love.graphics.draw(assets.bg, 0, 0)
 		for _, e in ipairs(_.sort(self.entities, function(a,b) return a.layer < b.layer end)) do
 			drawSystem(e, e)
 		end
@@ -131,6 +129,12 @@ end
 -- ====================================
 --          HELPER FUNCTIONS
 -- ====================================
+function Scene:getObject(tag)
+	return _.filter(self.entities, function(e)
+		return e[tag] == true
+	end)
+end
+
 function Scene:getNearestEntityFromSource(source, maxDistance, tag)
 	-- get visible entities except source
 	local filteredEntities = _.reject(self.entities, function(e)

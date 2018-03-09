@@ -2,8 +2,8 @@ local assets =  require "assets"
 
 local Scene = require "alphonsus.scene"
 local Input = require "alphonsus.input"
-local UIText = require "alphonsus.uitext"
-local GameObject = require "alphonsus.gameobject"
+local UIText = require "alphonsus.entities.UIText"
+local GameObject = require "alphonsus.entities.GameObject"
 
 local Gamestate = require "lib.hump.gamestate"
 local shack = require "lib.shack"

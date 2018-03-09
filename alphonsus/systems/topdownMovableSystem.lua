@@ -16,7 +16,6 @@
 --
 --
 
-local _ = require "lib.lume"
 local vector = require "lib.hump.vector-light"
 local Vec = require "lib.hump.vector"
 local System = require "lib.knife.system"
@@ -24,6 +23,7 @@ local System = require "lib.knife.system"
 local topdownMovableSystem = System(
 	{ "movable" },
 	function(movable, e, dt)		
+		if e.platformer then return end
 		local mov = movable
 		local vel, accel, maxVel, drag = mov.velocity, mov.acceleration, mov.maxVelocity, mov.drag
 

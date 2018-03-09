@@ -1,10 +1,8 @@
-local _ = require "lib.lume"
 local Object = require "lib.classic"
 local gamera = require "lib.gamera"
 local shack = require "lib.shack"
 
 local Camera = Object:extend()
-local assets = require "assets"
 
 function Camera:new(followSpeed, zoomSpeed)
 	if G.fullscreen then
@@ -56,17 +54,20 @@ end
 -- target must be GameObject
 function Camera:startFollowing(target, ox, oy)
 	self.followTarget = target
+	self.pos.x = target.pos.x + (ox or target.offset.x or 0)
+	self.pos.y = target.pos.y + (oy or target.offset.y or 0)
 	self.offset.x = ox or 0
 	self.offset.y = oy or 0
 end
 
 function Camera:update(dt)
-	local t = self.followTarget
-	local targetX = (t and (t.pos.x + t.offset.x) or 0) + self.offset.x
-	local targetY = (t and (t.pos.y + t.offset.y) or 0) + self.offset.y
-
-	self.pos.x = _.lerp(self.pos.x, targetX, dt * self.followSpeed)
-	self.pos.y = _.lerp(self.pos.y, targetY, dt * self.followSpeed)
+	if self.followTarget then
+		local t = self.followTarget
+		local targetX = (t and (t.pos.x + t.offset.x) or 0) + self.offset.x
+		local targetY = (t and (t.pos.y + t.offset.y) or 0) + self.offset.y
+		self.pos.x = _.lerp(self.pos.x, targetX, dt * self.followSpeed)
+		self.pos.y = _.lerp(self.pos.y, targetY, dt * self.followSpeed)
+	end
 
 	self.cam:setPosition(math.floor(self.pos.x), math.floor(self.pos.y))
 
