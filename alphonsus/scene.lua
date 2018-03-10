@@ -9,6 +9,7 @@ local push = require "lib.push"
 local gamera = require "lib.gamera"
 local bump = require "lib.bump"
 local flux = require "lib.flux"
+local Gamestate = require "lib.hump.gamestate"
 
 local Camera = require "alphonsus.camera"
 local Input = require "alphonsus.input"
@@ -75,6 +76,15 @@ function Scene:update(dt)
 	end
 
 	self.camera:update(dt)
+
+	if Input.wasKeyPressed('`') then
+		G.debug = not G.debug
+ 	end
+
+	if Input.wasKeyPressed('r') then
+		Gamestate.switch(self)
+	end
+
 	self:stateUpdate(dt)
 	Input.clear()
 end

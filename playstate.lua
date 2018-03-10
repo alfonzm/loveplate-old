@@ -93,14 +93,6 @@ function PlayState:stateUpdate(dt)
 	-- 	self.camera.zoom = 0.6
 	-- end
 
-	if Input.wasKeyPressed('`') then
-		G.debug = not G.debug
- 	end
-
- 	if Input.wasKeyPressed('r') then
-		Gamestate.switch(self)
-	end
-
 	-- if Input.wasKeyPressed('z') then
 	-- 	player:jump()
 	-- end
