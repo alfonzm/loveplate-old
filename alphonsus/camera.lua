@@ -22,12 +22,14 @@ function Camera:new(followSpeed, zoomSpeed)
 		y = 0
 	}
 
+	self.layers = {}
+
 	self.constantZoom = G.fullscreen and G.scale or 1.0
 	self.zoom = 1.0
 	self.cam:setScale(self.constantZoom * self.zoom)
 
 	-- setup default boundaries
-	self.cam:setWorld(0,0,10000,10000)
+	self.cam:setWorld(-1000,-1000,10000,10000)
 	self.cam:setWindow(0, 0, G.width, G.height)
 
 	self.followTarget = nil -- must be GameObject type
@@ -35,6 +37,11 @@ function Camera:new(followSpeed, zoomSpeed)
 	self.zoomSpeed = zoomSpeed or 3
 
 	return self
+end
+
+function Camera:newLayer(scale, func)
+	table.insert(self.layers, { draw = func, scale = scale })
+	table.sort(self.layers, function(a,b) return a.scale < b.scale end)
 end
 
 function Camera:isPointVisible(x, y)
@@ -58,6 +65,18 @@ function Camera:startFollowing(target, ox, oy)
 	self.pos.y = target.pos.y + (oy or target.offset.y or 0)
 	self.offset.x = ox or 0
 	self.offset.y = oy or 0
+end
+
+function Camera:draw()
+	local bx, by = self.x, self.y
+
+	for _, layer in ipairs(self.layers) do
+		self.x = bx * layer.scale
+		self.y = by * layer.scale
+		camera:set()
+		layer.draw()
+		camera:unset()
+	end
 end
 
 function Camera:update(dt)

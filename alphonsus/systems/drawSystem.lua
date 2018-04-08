@@ -45,6 +45,8 @@ local drawSystem = System(
 			love.graphics.rectangle("line", e.collider.x, e.collider.y, e.collider.w, e.collider.h)
 			love.graphics.setColor(255, 255, 255)
 		end
+		
+		scene.camera.cam:setScale(1)
 	end
 )
 

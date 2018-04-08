@@ -24,6 +24,8 @@ function GameObject:new(x, y, w, h)
 	-- draw layer
 	self.layer = 0
 
+	self.parallax = 1
+
 	-- if true, drawSystem will set self.layer to self.pos.y on update loop
 	-- used for 2.5D topdown games
 	self.isLayerYPos = false

@@ -98,12 +98,20 @@ function Scene:draw()
 	love.graphics.setColor(unpack(self.bgColor))
 	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 	love.graphics.setColor(255,255,255,255)
-	self.camera.cam:draw(function(l,t,w,h)
-		shack:apply()
-		for _, e in ipairs(_.sort(self.entities, function(a,b) return a.layer < b.layer end)) do
-			drawSystem(e, e)
-		end
-	end)
+
+	local layers = _.sort(_.unique(_.map(self.entities, function(e) return e.parallax end)))
+
+	for i, parallax in ipairs(layers) do
+		self.camera.cam:setPosition(self.camera.pos.x * parallax, self.camera.pos.y * parallax)
+		self.camera.cam:draw(function(l,t,w,h)
+			shack:apply()
+			local entitiesOfLayer = _.filter(self.entities, function(e) return e.parallax == parallax end)
+			local sortedEntities = _.sort(entitiesOfLayer, function(a,b) return a.layer < b.layer end)
+			for _, e in ipairs(sortedEntities) do
+				drawSystem(e, e)
+			end
+		end)
+	end
 	push:finish()
 
 	if G.debug then

@@ -184,13 +184,13 @@ function Player:moveControls(dt)
 		self.movable.acceleration.x = 0
 	end
 
-	-- if up and not down then
-	-- 	self.movable.acceleration.y = -self.movable.speed.y
-	-- elseif down and not up then
-	-- 	self.movable.acceleration.y = self.movable.speed.y
-	-- else
-	-- 	self.movable.acceleration.y = 0
-	-- end
+	if up and not down then
+		self.movable.acceleration.y = -self.movable.speed.y
+	elseif down and not up then
+		self.movable.acceleration.y = self.movable.speed.y
+	else
+		self.movable.acceleration.y = 0
+	end
 end
 
 function Player:draw()

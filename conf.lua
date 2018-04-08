@@ -8,7 +8,7 @@ G = {
   fullscreen = false,
   debug = false,
 
-  platformer = true,
+  platformer = false,
   gravity = -1200,
 
   layers = {
@@ -22,6 +22,12 @@ G = {
     bullet     = 700,
     ui         = 999,
   }
+}
+
+Colors = {
+  white = {255,255,255,255},
+  red = {255,0,0,255},
+  green = {0,255,0,255},
 }
 
 function love.conf(t)
